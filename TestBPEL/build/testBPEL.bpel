@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="testBPEL"
+    targetNamespace="http://enterprise.netbeans.org/bpel/TestBPEL/testBPEL"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/TestBPEL/testBPEL"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:jtx="java://com.atc.jsonhelper.JsonHelper" 
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns0="java://org.apache.commons.jxpath.servlet.ServletRequestHandler" xmlns:ns1="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension" ns1:ignoreMissingFromData="yes">
+    <import namespace="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" location="testWSDL.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" location="Out.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/napiWrapper" location="napiWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://beeline.ru/napi" location="config/napi.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="PartnerLink3" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" partnerLinkType="tns:Out" partnerRole="OutPortTypeRole"/>
+        <partnerLink name="PartnerLink2" xmlns:tns="http://enterprise.netbeans.org/bpel/napiWrapper" partnerLinkType="tns:NAPIEjbBeanLinkType" partnerRole="NAPIEjbBeanRole"/>
+        <partnerLink name="PartnerLink1" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" partnerLinkType="tns:testQueueInterface" myRole="testWSDLPortTypeRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="GetAbonentInfoOut" xmlns:tns="http://beeline.ru/napi" messageType="tns:getAbonentInfoResponse"/>
+        <variable name="GetAbonentInfoIn" xmlns:tns="http://beeline.ru/napi" messageType="tns:getAbonentInfoRequest"/>
+        <variable name="OutOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" messageType="tns:OutOperationResponse"/>
+        <variable name="OutOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" messageType="tns:OutOperationRequest"/>
+      <variable name="TestWSDLOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" messageType="tns:testWSDLOperationResponse"/>
+        <variable name="TestWSDLOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" messageType="tns:testWSDLOperationRequest"/>
+    </variables>
+    <sequence>
+        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink1" operation="testWSDLOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" portType="tns:testQueueInterface" variable="TestWSDLOperationIn"/>
+        <assign name="Assign1">
+            <copy>
+                <from variable="TestWSDLOperationIn" part="part"/>
+                <to>$GetAbonentInfoIn.parameters/ctnNumber</to>
+            </copy>
+        </assign>
+        <invoke name="Invoke3" partnerLink="PartnerLink2" operation="getAbonentInfo" xmlns:tns="http://beeline.ru/napi" portType="tns:NAPIEjbBean" inputVariable="GetAbonentInfoIn" outputVariable="GetAbonentInfoOut"/>
+        <assign name="Assign2">
+            <copy>
+                <from>$GetAbonentInfoOut.parameters/getAbonentInfoReturn/inn</from>
+                <to variable="OutOperationIn" part="part1"/>
+            </copy>
+        </assign>
+        <invoke name="Invoke2" partnerLink="PartnerLink3" operation="OutOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" portType="tns:OutPortType" inputVariable="OutOperationIn" outputVariable="OutOperationOut"/>
+    </sequence>
+</process>

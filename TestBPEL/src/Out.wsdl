@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="Out" targetNamespace="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:jms="http://schemas.sun.com/jbi/wsdl-extensions/jms/">
+    <types/>
+    <message name="OutOperationRequest">
+        <part name="part1" type="xsd:string"/>
+    </message>
+    <message name="OutOperationResponse">
+        <part name="part1" type="xsd:string"/>
+    </message>
+    <portType name="OutPortType">
+        <operation name="OutOperation">
+            <input name="input1" message="tns:OutOperationRequest"/>
+            <output name="output1" message="tns:OutOperationResponse"/>
+        </operation>
+    </portType>
+    <binding name="OutQueueBinding" type="tns:OutPortType">
+        <jms:binding/>
+        <operation name="OutOperation">
+            <jms:operation destination="${testQueueNameOut}" destinationType="Queue" transaction="NoTransaction" deliveryMode="PERSISTENT" priority="4" timeout="300000" maxConcurrentConsumers="5" concurrencyMode="cc"/>
+            <input name="input1">
+                <jms:message messageType="TextMessage" textPart="part1"/>
+            </input>
+            <output name="output1">
+                <jms:message messageType="TextMessage" textPart="part1"/>
+            </output>
+        </operation>
+    </binding>
+     <service name="OutQueueService">
+        <port name="CommonQueueInterface_InPort" binding="tns:OutQueueBinding">
+            <jms:address connectionURL="lookup://jms/tx/default"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="Out">
+        <plnk:role name="OutPortTypeRole" portType="tns:OutPortType"/>
+    </plnk:partnerLinkType>
+</definitions>

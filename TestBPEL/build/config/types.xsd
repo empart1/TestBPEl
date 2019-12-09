@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding='UTF-8'?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://beeline.ru/napi"
+    xmlns:tns="http://beeline.ru/napi"
+    elementFormDefault="qualified">
+
+
+    <xsd:element name="ServiceException" type="tns:ServiceException"/>
+
+    <xsd:complexType name="ServiceException">
+        <xsd:sequence>
+            <xsd:element name="faultactor" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="faultcode" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="faultdetail" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="message" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    
+   
+    
+</xsd:schema>

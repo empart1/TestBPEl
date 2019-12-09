@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jbi xmlns="http://java.sun.com/xml/ns/jbi" xmlns:ns1="http://j2ee.netbeans.org/wsdl/TestBPEL/src/testWSDL" xmlns:ns2="http://enterprise.netbeans.org/bpel/TestBPEL/testBPEL" xmlns:ns3="http://beeline.ru/napi" xmlns:ns4="http://j2ee.netbeans.org/wsdl/TestBPEL/src/Out" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://java.sun.com/xml/ns/jbi ./jbi.xsd">
+    <service-assembly>
+        <identification>
+            <name>CompositeApp1</name>
+            <description>Represents the Service Assembly of CompositeApp1</description>
+        </identification>
+        <service-unit>
+            <identification>
+                <name>CompositeApp1-TestBPEL</name>
+                <description>Represents this Service Unit</description>
+            </identification>
+            <target>
+                <artifacts-zip>TestBPEL.jar</artifacts-zip>
+                <component-name>sun-bpel-engine</component-name>
+            </target>
+        </service-unit>
+        <service-unit>
+            <identification>
+                <name>CompositeApp1-sun-http-binding</name>
+                <description>Represents this Service Unit</description>
+            </identification>
+            <target>
+                <artifacts-zip>sun-http-binding.jar</artifacts-zip>
+                <component-name>sun-http-binding</component-name>
+            </target>
+        </service-unit>
+        <service-unit>
+            <identification>
+                <name>CompositeApp1-sun-jms-binding</name>
+                <description>Represents this Service Unit</description>
+            </identification>
+            <target>
+                <artifacts-zip>sun-jms-binding.jar</artifacts-zip>
+                <component-name>sun-jms-binding</component-name>
+            </target>
+        </service-unit>
+        <connections>
+            <connection>
+                <consumer endpoint-name="CommonQueueInterface_InPort" service-name="ns1:testQueueService"/>
+                <provider endpoint-name="testWSDLPortTypeRole_myRole" service-name="ns2:PartnerLink1"/>
+            </connection>
+            <connection>
+                <consumer endpoint-name="NAPIEjbBeanRole_partnerRole" service-name="ns2:PartnerLink2"/>
+                <provider endpoint-name="NAPIPortPromotionManagement" service-name="ns3:NAPIService"/>
+            </connection>
+            <connection>
+                <consumer endpoint-name="OutPortTypeRole_partnerRole" service-name="ns2:PartnerLink3"/>
+                <provider endpoint-name="CommonQueueInterface_InPort" service-name="ns4:OutQueueService"/>
+            </connection>
+            <connection>
+                <consumer endpoint-name="NAPIEjbBeanRole_partnerRole" service-name="ns2:PartnerLinknapi"/>
+                <provider endpoint-name="NAPIPortPromotionManagement" service-name="ns3:NAPIService"/>
+            </connection>
+        </connections>
+        <route-types xmlns="http://www.open-esb.net/xml/ns/jbi">
+            <source endpoint-name="CommonQueueInterface_InPort" mode="local" routing-rule="default" service-name="ns1:testQueueService">direct</source>
+            <source endpoint-name="NAPIEjbBeanRole_partnerRole" mode="local" routing-rule="default" service-name="ns2:PartnerLink2">direct</source>
+            <source endpoint-name="OutPortTypeRole_partnerRole" mode="local" routing-rule="default" service-name="ns2:PartnerLink3">direct</source>
+            <source endpoint-name="NAPIEjbBeanRole_partnerRole" mode="local" routing-rule="default" service-name="ns2:PartnerLinknapi">direct</source>
+        </route-types>
+        <interface-mapping xmlns="http://www.open-esb.net/xml/ns/jbi">
+            <implementation>
+                <by-provider endpoint-name="testWSDLPortTypeRole_myRole" service-name="ns2:PartnerLink1"/>
+                <interface name="ns1:testQueueInterface"/>
+            </implementation>
+            <implementation>
+                <by-provider endpoint-name="NAPIPortPromotionManagement" service-name="ns3:NAPIService"/>
+                <interface name="ns3:NAPIEjbBean"/>
+            </implementation>
+            <implementation>
+                <by-provider endpoint-name="CommonQueueInterface_InPort" service-name="ns4:OutQueueService"/>
+                <interface name="ns4:OutPortType"/>
+            </implementation>
+            <implementation>
+                <by-provider endpoint-name="NAPIPortPromotionManagement" service-name="ns3:NAPIService"/>
+                <interface name="ns3:NAPIEjbBean"/>
+            </implementation>
+        </interface-mapping>
+    </service-assembly>
+</jbi>
